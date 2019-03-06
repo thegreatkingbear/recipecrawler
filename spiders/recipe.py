@@ -5,12 +5,14 @@ from RecipeCrawler.items import RecipeItem, StepItem
 class RecipeSpider(scrapy.Spider):
     name = 'recipe.py'
 
+    # hand out every pages to "parse recipe list" method
     def start_requests(self):
         for i in range(1, 10): # 6304 is the last page
             url = 'http://www.10000recipe.com/recipe/list.html?order=accuracy&page={}'.format(i)
             request = scrapy.Request(url=url, callback=self.parseRecipeList)
             yield request
 
+    # parse lists in the page into seperate recipes
     def parseRecipeList(self, response):
         #links = LinkExtractor(restrict_xpaths='//div[@class="recipe_list"]') # not sure how to use
         for link in response.xpath('//a[@class="thumbnail"]/@href').extract():
@@ -18,6 +20,7 @@ class RecipeSpider(scrapy.Spider):
             request = scrapy.Request(url=url, callback=self.parseRecipe)
             yield request
 
+    # hand over recipe link from previous method then parse it into items
     def parseRecipe(self, response):
         # prepare variables
         recipe = RecipeItem()
