@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from scrapy.linkextractors import LinkExtractor
 from RecipeCrawler.items import RecipeItem, StepItem
 
 class RecipeSpider(scrapy.Spider):
     name = 'recipe.py'
-    # start_urls = [
-    #     'http://www.10000recipe.com/recipe/list.html?order=accuracy&page=',
-    # ]
 
     def start_requests(self):
-        for i in range(1, 10): # XXXX is the limit
+        for i in range(1, 10): # 6304 is the last page
             url = 'http://www.10000recipe.com/recipe/list.html?order=accuracy&page={}'.format(i)
             request = scrapy.Request(url=url, callback=self.parseRecipeList)
             yield request
@@ -29,7 +25,7 @@ class RecipeSpider(scrapy.Spider):
         sub_ingredients = []
 
         # dish image (original size)
-        recipe['image_urls'] = [ response.xpath('//img[@id="main_thumbs"]').attrib['src'] ]
+        recipe['image_urls'] = [ response.xpath('//img[@id="main_thumbs"]').attrib['src'] ] # image pipeline only accepts list format
 
         # summary
         summary = response.xpath('//div[@class="view2_summary"]')
@@ -84,7 +80,7 @@ class RecipeSpider(scrapy.Spider):
             image_step_path = step.xpath('./div[2]/img')
             if image_step_path.get() is not None:
                 image_step = image_step_path.attrib['src']
-                stepItem['image_urls'] = [ image_step ]
+                stepItem['image_urls'] = [ image_step ] # image pipeline only accepts list format
             step_items.append(stepItem)
         recipe['steps'] = step_items
 
