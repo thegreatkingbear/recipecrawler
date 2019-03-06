@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy.linkextractors import LinkExtractor
-from RecipeCrawler.items import RecipeItem
+from RecipeCrawler.items import RecipeItem, StepItem
 
 class RecipeSpider(scrapy.Spider):
     name = 'recipe.py'
@@ -28,8 +28,8 @@ class RecipeSpider(scrapy.Spider):
         main_ingredients = []
         sub_ingredients = []
 
-        # image
-        recipe['image_url'] = response.xpath('//img[@id="main_thumbs"]').attrib['src']
+        # dish image (original size)
+        recipe['image_urls'] = [ response.xpath('//img[@id="main_thumbs"]').attrib['src'] ]
 
         # summary
         summary = response.xpath('//div[@class="view2_summary"]')
@@ -75,18 +75,18 @@ class RecipeSpider(scrapy.Spider):
                 recipe['video_url'] = video_src
 
         # steps 
-        text_steps = []
-        image_steps = []
+        step_items = []
         for step in response.xpath('//div[starts-with(@id, "stepDiv")]'):
+            stepItem = StepItem()
             text_step = step.xpath('.//text()').extract() # to get all texts in children
             text_step = ' '.join(text_step)
-            text_steps.append(text_step)
+            stepItem['content'] = text_step
             image_step_path = step.xpath('./div[2]/img')
             if image_step_path.get() is not None:
                 image_step = image_step_path.attrib['src']
-                image_steps.append(image_step)
-        recipe['steps_text'] = text_steps
-        recipe['steps_image_url'] = image_steps
+                stepItem['image_urls'] = [ image_step ]
+            step_items.append(stepItem)
+        recipe['steps'] = step_items
 
         # tags (if exists)
         tags = []

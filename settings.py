@@ -65,8 +65,8 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'RecipeCrawler.pipelines.RecipecrawlerPipeline': 300,
-    'scrapy.pipelines.images.ImagesPipeline': 1
+    'scrapy.pipelines.images.ImagesPipeline': 1,
+    'RecipeCrawler.pipelines.RecipecrawlerPipeline': 300
 }
 
 MONGODB_SERVER = "localhost"
@@ -75,8 +75,8 @@ MONGODB_DB = "recipes"
 MONGODB_COLLECTION = "recipes"
 
 IMAGES_STORE = '/Users/mookyungkwak/Projects/RecipeCrawler/crawled_images'
-IMAGES_URLS_FIELD = { 'RecipeItem.image_url', 'RecipeItem.steps_image_url'}
-IMAGES_RESULT_FIELD = { 'RecipeItem.image', 'RecipeItem.steps_image' }
+# IMAGES_URLS_FIELD = 'steps_image_url'
+# IMAGES_RESULT_FIELD = 'steps_image'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
