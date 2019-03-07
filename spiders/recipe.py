@@ -77,6 +77,7 @@ class RecipeSpider(scrapy.Spider):
         step_items = []
         for step in response.xpath('//div[starts-with(@id, "stepDiv")]'):
             stepItem = StepItem()
+            stepItem['url'] = response.url # unique key for nested item
             text_step = step.xpath('.//text()').extract() # to get all texts in children
             text_step = ' '.join(text_step)
             stepItem['content'] = text_step
@@ -85,7 +86,9 @@ class RecipeSpider(scrapy.Spider):
                 image_step = image_step_path.attrib['src']
                 stepItem['image_urls'] = [ image_step ] # image pipeline only accepts list format
             step_items.append(stepItem)
+            yield stepItem
         recipe['steps'] = step_items
+        recipe['url'] = response.url # unique key for nested item
 
         # tags (if exists)
         tags = []
@@ -105,3 +108,4 @@ class RecipeSpider(scrapy.Spider):
         recipe['tip'] = tips
         
         yield recipe
+

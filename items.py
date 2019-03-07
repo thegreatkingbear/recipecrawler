@@ -8,7 +8,7 @@
 import scrapy
 
 class RecipeItem(scrapy.Item):
-    # define the fields for your item here like:
+    url = scrapy.Field()
     title = scrapy.Field()
     thumbnail = scrapy.Field()
     image_urls = scrapy.Field()
@@ -26,6 +26,7 @@ class RecipeItem(scrapy.Item):
     pass
 
 class StepItem(scrapy.Item):
+    url = scrapy.Field()
     content = scrapy.Field()
     image_urls = scrapy.Field()
     images = scrapy.Field()

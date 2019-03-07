@@ -13,6 +13,8 @@ from scrapy import log
  
 import pymongo
 
+from RecipeCrawler.items import RecipeItem
+
 # this mongo db pipeline seems very general which means I can use it in lots of different projects
 class RecipecrawlerPipeline(object):
     def __init__(self):
@@ -31,6 +33,8 @@ class RecipecrawlerPipeline(object):
                 raise DropItem("Missing {0}!". format(data))
  
         if valid:
+            if not isinstance(item, RecipeItem): # exclude except RecipeItem (for clean db)
+                return item
             self.collection.insert(dict(item))
             log.msg("Quotes added to MongoDB database!",
                     level=log.DEBUG, spider=spider)
